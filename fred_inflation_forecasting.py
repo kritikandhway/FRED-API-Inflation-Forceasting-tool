@@ -208,12 +208,17 @@ directional_accuracy = np.mean(actual_direction==predicted_direction)*100
 #print(AR_clean3.shape)
 prediction_mom = model.predict(X_future)
 print("change in MoM% cpi "+str(next_month)+" is "+str(prediction_mom))
-graph_data = pd.concat([data_analysis["inflation_value"].iloc[-6:],pd.Series([prediction_mom[0]],index=[month_date])])
+previous_month  = data_analysis["inflation_value"].iloc[-6:]
+forecast_month = pd.Series([prediction_mom[0]],index=[month_date])
+graph_data = pd.concat((previous_month,forecast_month))
 plt.plot(graph_data.index, graph_data.values)
 plt.xlabel("Month")
 plt.ylabel("Monthly Inflation(%)")
+plt.title("Monthly Inflation Forecast")
+plt.scatter(previous_month.index,previous_month.values,marker="o",label="Actual")
+plt.scatter(forecast_month.index,forecast_month.values,marker="D",label="Forecast")
 for x,y in graph_data.items():
     plt.annotate(f"{y:.2f}%",(x,y))
-    plt.scatter(x,y,marker="o")
+plt.legend()
 plt.show()
 
